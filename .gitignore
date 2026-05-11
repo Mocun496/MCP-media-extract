@@ -1,0 +1,9 @@
+media_extract_tool/.venv/
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+Thumbs.db
+.DS_Store

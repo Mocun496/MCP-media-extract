@@ -1,0 +1,13 @@
+---
+description: 分析本工作区内的文档/图片时，优先使用 MCP 工具 media-extract 的 extract_file；若无 MCP 再用终端 CLI。
+alwaysApply: true
+---
+
+# 本地文件内容提取
+
+当用户给出 **工作区内的路径** 并要求分析 DOCX / PPTX / PDF / 图片内容时：
+
+1. **优先**调用 MCP 工具 **`extract_file`**（`media-extract` 服务器），传入相对工作区根的 `file_path`；需要图中文字时设 `ocr: true`；需要结构化 JSON 时设 `output_format: "json"`。
+2. 若 MCP 不可用，再在仓库根执行：  
+   `.\media_extract_tool\.venv\Scripts\python -m media_extract extract "<路径>" --format text`  
+   安装步骤见根目录 `README.md`。

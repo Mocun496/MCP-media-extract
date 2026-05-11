@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://local/udr.schema.json",
+  "title": "UnifiedDocumentRepresentation",
+  "type": "object",
+  "required": ["schemaVersion", "document", "blocks"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "1.0.0" },
+    "document": {
+      "type": "object",
+      "required": ["sourceFormat", "sourceUri", "fingerprint"],
+      "additionalProperties": false,
+      "properties": {
+        "sourceFormat": { "type": "string", "enum": ["docx", "pptx", "pdf", "image", "unknown"] },
+        "sourceUri": { "type": "string" },
+        "originalFilename": { "type": "string" },
+        "mimeType": { "type": "string" },
+        "byteSize": { "type": "integer", "minimum": 0 },
+        "fingerprint": { "type": "string" },
+        "ingestedAt": { "type": "string", "format": "date-time" },
+        "pipeline": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "libraryVersions": { "type": "object", "additionalProperties": { "type": "string" } },
+            "ocrEngine": { "type": "string" },
+            "visionModelId": { "type": "string" }
+          }
+        },
+        "pdf": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pageCount": { "type": "integer", "minimum": 0 },
+            "isEncrypted": { "type": "boolean" },
+            "isLikelyScanned": { "type": "boolean" },
+            "outline": { "type": "array", "items": { "$ref": "#/definitions/outlineNode" } }
+          }
+        },
+        "pptx": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "slideCount": { "type": "integer", "minimum": 0 } }
+        },
+        "image": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "widthPx": { "type": "integer", "minimum": 0 },
+            "heightPx": { "type": "integer", "minimum": 0 },
+            "hasAlpha": { "type": "boolean" },
+            "exif": { "type": "object", "additionalProperties": true }
+          }
+        }
+      }
+    },
+    "blocks": { "type": "array", "items": { "$ref": "#/definitions/block" } },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["assetId", "kind", "uri"],
+        "additionalProperties": false,
+        "properties": {
+          "assetId": { "type": "string", "pattern": "^ast_[a-zA-Z0-9_-]+$" },
+          "kind": { "type": "string", "enum": ["embedded_image", "rendered_page_raster", "attachment"] },
+          "uri": { "type": "string" },
+          "mimeType": { "type": "string" },
+          "sourceLocation": { "$ref": "#/definitions/location" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "outlineNode": {
+      "type": "object",
+      "required": ["title", "pageIndex"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "pageIndex": { "type": "integer", "minimum": 0 },
+        "children": { "type": "array", "items": { "$ref": "#/definitions/outlineNode" } }
+      }
+    },
+    "location": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["pageIndex"],
+          "additionalProperties": false,
+          "properties": {
+            "pageIndex": { "type": "integer", "minimum": 0 },
+            "bboxNorm": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "number" } }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["slideIndex"],
+          "additionalProperties": false,
+          "properties": {
+            "slideIndex": { "type": "integer", "minimum": 0 },
+            "shapeId": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["docxPath"],
+          "additionalProperties": false,
+          "properties": { "docxPath": { "type": "string" } }
+        }
+      ]
+    },
+    "block": {
+      "type": "object",
+      "required": ["blockId", "type", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "blockId": { "type": "string", "pattern": "^blk_[a-zA-Z0-9_-]+$" },
+        "type": {
+          "type": "string",
+          "enum": [
+            "heading",
+            "paragraph",
+            "list_item",
+            "table",
+            "table_row",
+            "table_cell",
+            "slide_title",
+            "slide_body",
+            "speaker_notes",
+            "page_ocr",
+            "image_caption",
+            "other"
+          ]
+        },
+        "text": { "type": "string" },
+        "level": { "type": "integer", "minimum": 1, "maximum": 9 },
+        "location": { "$ref": "#/definitions/location" },
+        "confidence": {
+          "anyOf": [{ "type": "null" }, { "type": "number", "minimum": 0, "maximum": 1 }]
+        },
+        "parentBlockId": { "type": "string" },
+        "metadata": { "type": "object", "additionalProperties": true }
+      }
+    }
+  }
+}

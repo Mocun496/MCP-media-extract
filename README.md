@@ -61,3 +61,15 @@ python -m venv .venv
 ## 支持格式
 
 `.docx`、`.pptx`、`.pdf`、`.png` `.jpg` `.jpeg` `.webp` `.gif` `.bmp` `.tif` `.tiff`。不支持旧版 `.ppt`。
+
+## 上传到 GitHub
+
+本仓库根目录已 `git init` 且默认分支为 `main`。在 GitHub 新建空仓库后执行（替换为你的用户名与仓库名）：
+
+```powershell
+cd "d:\GAME DESIGN\skills"
+git remote add origin https://github.com/<你的用户名>/<仓库名>.git
+git push -u origin main
+```
+
+若已存在 `origin`，改用 `git remote set-url origin ...`。

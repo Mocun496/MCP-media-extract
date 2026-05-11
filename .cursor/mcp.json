@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "media-extract": {
+      "type": "stdio",
+      "command": "D:/GAME DESIGN/skills/media_extract_tool/.venv/Scripts/python.exe",
+      "args": ["-m", "media_extract.mcp_server"],
+      "cwd": "D:/GAME DESIGN/skills",
+      "env": {
+        "MEDIA_EXTRACT_WORKSPACE": "D:/GAME DESIGN/skills"
+      }
+    }
+  }
+}

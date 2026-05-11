@@ -36,27 +36,13 @@ python -m venv .venv
 
 ## Cursor MCP
 
-1. 在 Cursor **设置 → MCP** 中新增服务器（stdio），示例（请把路径改成你的本机绝对路径）：
+本仓库已写好 **`.cursor/mcp.json`**（`type: stdio`，指向本机 venv 与 `MEDIA_EXTRACT_WORKSPACE`）。请 **重新加载窗口**（命令面板：`Developer: Reload Window`）或重启 Cursor，然后在 **设置 → MCP** 中确认出现 **`media-extract`**。
 
-```json
-{
-  "mcpServers": {
-    "media-extract": {
-      "command": "D:/GAME DESIGN/skills/media_extract_tool/.venv/Scripts/python.exe",
-      "args": ["-m", "media_extract.mcp_server"],
-      "cwd": "D:/GAME DESIGN/skills",
-      "env": {
-        "MEDIA_EXTRACT_WORKSPACE": "D:/GAME DESIGN/skills"
-      }
-    }
-  }
-}
-```
+若列表里没有该服务器，可把 `.cursor/mcp.json` 里的 `mcpServers` 段落合并到用户目录 **`%USERPROFILE%\.cursor\mcp.json`**（与官方文档一致）。
 
-2. 重启 Cursor 或重载 MCP。工具名：**`extract_file`**。  
-3. **`file_path`** 必须为 **`MEDIA_EXTRACT_WORKSPACE` 目录下的相对路径**（或落在该目录内的绝对路径），否则会被拒绝，避免任意读盘。
+工具名：**`extract_file`**。`file_path` 须落在 **`MEDIA_EXTRACT_WORKSPACE`** 之下（相对工作区根或该目录内的绝对路径）。可选参数：`ocr`、`password`、`output_format`（`text` | `json`）。
 
-参数与 CLI 类似：`ocr`、`password`、`output_format`（`text` | `json`）。
+克隆本仓库到其它机器后，请编辑 `.cursor/mcp.json` 中的 `command` / `cwd` / `MEDIA_EXTRACT_WORKSPACE` 为本地路径。
 
 ## 支持格式
 
